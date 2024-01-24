@@ -61,3 +61,13 @@ wires_list: list[Part.Wire] = [
 normal_face: Part.Face = doc.getObjectsByLabel("feature_1_hor_finishing_srf")[0].Shape.Faces[0]
 
 animate_job(wires_list, normal_face, dist=1, step=1)
+
+#####################################
+# feature_1_ver_finishing job
+path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_1_ver_finishing_path")[0]
+# noinspection PyUnresolvedReferences
+wires_list: list[Part.Wire] = path_obj.Shape.Wires
+# noinspection PyUnresolvedReferences
+normal_face: Part.Face = doc.getObjectsByLabel("feature_1_ver_finishing_srf")[0].Shape.Faces[0]
+
+animate_job(wires_list, normal_face, dist=1, step=1)
