@@ -8,7 +8,7 @@ import FreeCADGui as Gui
 import Part
 
 
-def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step: int = 1) -> None:
+def animate_spindle(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step: int = 1) -> None:
     # noinspection PyUnresolvedReferences
     target_pos: list[App.Vector] = list(
         itertools.chain.from_iterable([w.discretize(Distance=dist) for w in wires])
@@ -30,9 +30,40 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
         time.sleep(0.0005)
 
 
+def animate_fixture(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step: int = 1) -> None:
+    fixed_tool_pos: App.Vector = App.Vector(1850, -370, 490)
+    fixed_tool_normal: App.Vector = App.Vector(-1, 0, 0)
+    # fixed_tool_x: App.Vector = App.Vector(0, 1, 0)
+
+    # noinspection PyUnresolvedReferences
+    target_pos: list[App.Vector] = list(
+        itertools.chain.from_iterable([w.discretize(Distance=dist) for w in wires])
+    )
+
+    # noinspection PyUnresolvedReferences
+    normal_srf: Part.Face.Surface = normals.Surface
+    for i in np.arange(0, len(target_pos), step):
+        # noinspection PyUnresolvedReferences
+        uv: tuple[float, float] = normal_srf.parameter(target_pos[i])
+        # noinspection PyUnresolvedReferences
+        normal: App.Vector = normal_face.normalAt(uv[0], uv[1])
+
+        target_placement: App.Placement = App.Placement()
+        target_placement.Base = fixed_tool_pos - target_pos[i]
+
+        rot: App.Rotation = App.Rotation(fixed_tool_normal, -normal)
+        target_placement.rotate(tuple(target_pos[i]), rot.Axis, float(np.degrees(-rot.Angle)))
+        # target_placement.Rotation = App.Rotation(fixed_tool_normal, -normal)
+        target_obj.Placement = target_placement
+        Gui.updateGui()
+        time.sleep(0.0005)
+
+
 doc: App.Document = App.ActiveDocument
 
-# tool
+# tool and target
+target_obj: App.DocumentObject = doc.getObjectsByLabel("target_copy")[0]
+# target_obj: App.DocumentObject = doc.getObjectsByLabel("target_simplified")[0]
 tool_obj: App.DocumentObject = doc.getObjectsByLabel("5mm_endmill")[0]
 tool_normal: App.Vector = App.Vector(0, 0, -1)
 tool_x: App.Vector = App.Vector(1, 0, 0)
@@ -45,7 +76,8 @@ wires_list: list[Part.Wire] = path_obj.Shape.Wires
 # noinspection PyUnresolvedReferences
 normal_face: Part.Face = doc.getObjectsByLabel("feature_1_clearing_top")[0].Shape.Faces[0]
 
-animate_job(wires_list, normal_face, dist=2, step=2)
+# animate_spindle(wires_list, normal_face, dist=2, step=2)
+animate_fixture(wires_list, normal_face, dist=3, step=3)
 
 #####################################
 # feature_1_hor_finishing job
@@ -60,7 +92,8 @@ wires_list: list[Part.Wire] = [
 # noinspection PyUnresolvedReferences
 normal_face: Part.Face = doc.getObjectsByLabel("feature_1_hor_finishing_srf")[0].Shape.Faces[0]
 
-animate_job(wires_list, normal_face, dist=1, step=1)
+# animate_spindle(wires_list, normal_face, dist=1, step=1)
+animate_fixture(wires_list, normal_face, dist=2, step=2)
 
 #####################################
 # feature_1_ver_finishing job
@@ -70,4 +103,5 @@ wires_list: list[Part.Wire] = path_obj.Shape.Wires
 # noinspection PyUnresolvedReferences
 normal_face: Part.Face = doc.getObjectsByLabel("feature_1_ver_finishing_srf")[0].Shape.Faces[0]
 
-animate_job(wires_list, normal_face, dist=1, step=1)
+# animate_spindle(wires_list, normal_face, dist=1, step=1)
+animate_fixture(wires_list, normal_face, dist=2, step=2)
