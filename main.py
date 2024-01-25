@@ -56,14 +56,18 @@ def animate_fixture(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, s
         # target_placement.Rotation = App.Rotation(fixed_tool_normal, -normal)
         target_obj.Placement = target_placement
         Gui.updateGui()
+        # noinspection PyUnresolvedReferences
+        print(-(fixture_obj.Placement.Base - target_placement.Base) + fixed_tool_pos)
         time.sleep(0.0005)
 
 
 doc: App.Document = App.ActiveDocument
 
 # tool and target
-target_obj: App.DocumentObject = doc.getObjectsByLabel("target_copy")[0]
+target_obj: App.DocumentObject = doc.getObjectsByLabel("feature_1_target")[0]
 # target_obj: App.DocumentObject = doc.getObjectsByLabel("target_simplified")[0]
+fixture_obj: App.DocumentObject = doc.getObjectsByLabel("fixture")[0]
+
 tool_obj: App.DocumentObject = doc.getObjectsByLabel("5mm_endmill")[0]
 tool_normal: App.Vector = App.Vector(0, 0, -1)
 tool_x: App.Vector = App.Vector(1, 0, 0)
