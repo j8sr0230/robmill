@@ -64,7 +64,7 @@ def animate_fixture(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, s
         # noinspection PyUnresolvedReferences
         p = App.Placement()
         p.Base = target_placement.Base
-        #p.rotate(tuple(target_placement.Base), rot.Axis, float(np.degrees(rot.Angle)))
+        # p.rotate(tuple(target_placement.Base), rot.Axis, float(np.degrees(rot.Angle)))
         box.Placement = p
 
         print(p*fixture_zero_vect)
