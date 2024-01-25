@@ -36,6 +36,10 @@ def animate_fixture(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, s
     # fixed_tool_x: App.Vector = App.Vector(0, 1, 0)
 
     # noinspection PyUnresolvedReferences
+    fixture_zero_vertex: Part.Vertex = fixture_obj.Shape.Vertexes[1]
+    fixture_zero_vect: App.Vector = App.Vector(fixture_zero_vertex.X, fixture_zero_vertex.Y, fixture_zero_vertex.Z)
+
+    # noinspection PyUnresolvedReferences
     target_pos: list[App.Vector] = list(
         itertools.chain.from_iterable([w.discretize(Distance=dist) for w in wires])
     )
@@ -53,11 +57,18 @@ def animate_fixture(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, s
 
         rot: App.Rotation = App.Rotation(fixed_tool_normal, -normal)
         target_placement.rotate(tuple(target_pos[i]), rot.Axis, float(np.degrees(-rot.Angle)))
-        # target_placement.Rotation = App.Rotation(fixed_tool_normal, -normal)
         target_obj.Placement = target_placement
+
         Gui.updateGui()
+
         # noinspection PyUnresolvedReferences
-        print(-(fixture_obj.Placement.Base - target_placement.Base) + fixed_tool_pos)
+        p = App.Placement()
+        p.Base = target_placement.Base
+        #p.rotate(tuple(target_placement.Base), rot.Axis, float(np.degrees(rot.Angle)))
+        box.Placement = p
+
+        print(p*fixture_zero_vect)
+
         time.sleep(0.0005)
 
 
@@ -65,8 +76,11 @@ doc: App.Document = App.ActiveDocument
 
 # tool and target
 target_obj: App.DocumentObject = doc.getObjectsByLabel("feature_1_target")[0]
-# target_obj: App.DocumentObject = doc.getObjectsByLabel("target_simplified")[0]
 fixture_obj: App.DocumentObject = doc.getObjectsByLabel("fixture")[0]
+box: App.DocumentObject = doc.getObjectsByLabel("Quader")[0]
+
+
+# target_obj: App.DocumentObject = doc.getObjectsByLabel("target_simplified")[0]
 
 tool_obj: App.DocumentObject = doc.getObjectsByLabel("5mm_endmill")[0]
 tool_normal: App.Vector = App.Vector(0, 0, -1)
