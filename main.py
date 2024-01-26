@@ -26,7 +26,7 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
         fixture_placement.rotate(target_offset, rot_to_spindle.Axis, float(np.degrees(-rot_to_spindle.Angle)))  # noqa
         fixture_frame_obj.Placement = fixture_placement
 
-        print(target_offset, normal)
+        # print(target_offset, normal)
         Gui.updateGui()
         time.sleep(sleep)
 
