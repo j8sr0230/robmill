@@ -15,35 +15,38 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
     normal_srf: Part.Face.Surface = normals.Surface
     for i in np.arange(0, len(target_pos), step):
         # Fixture position
-        target_offset: App.Vector = part_pos + part_rot * target_pos[i]
+        target_offset: App.Vector = locale_part_pos + locale_part_rot * target_pos[i]
         fixture_placement: App.Placement = App.Placement()
-        fixture_placement.Base = spindle_pos - target_offset
+        fixture_placement.Base = globale_spindle_pos - target_offset
 
-        # Fixture orientation
+        # Fixture orientation to spindle axis
         uv: tuple[float, float] = normal_srf.parameter(target_pos[i])  # noqa
-        normal: App.Vector = part_rot * normal_face.normalAt(uv[0], uv[1])
-        rot_to_spindle_axis: App.Rotation = App.Rotation(normal, -spindle_axis)
+        globale_part_normal: App.Vector = locale_part_rot * normal_face.normalAt(uv[0], uv[1])
+        rot_to_spindle_axis: App.Rotation = App.Rotation(globale_part_normal, -globale_spindle_axis)
 
         fixture_placement.rotate(
             target_offset, rot_to_spindle_axis.Axis, float(np.degrees(rot_to_spindle_axis.Angle))  # noqa
         )
         fixture_frame_obj.Placement = fixture_placement
 
-        # spindle_x_on_fixture: App.Vector = fixture_placement.Rotation.inverted() * spindle_x
-        # z_on_fixture: App.Vector = spindle_frame_obj.Placement.Rotation.inverted() * fixture_placement.Rotation * App.Vector(0, 0, 1)
-        #
-        # print(z_on_fixture)
-        #print(spindle_x_on_fixture)
+        proj_spindle_x: App.Vector = globale_spindle_x.projectToPlane(
+            globale_spindle_pos, fixture_frame_obj.Placement.Rotation * App.Vector(1, 0, 0)  # noqa
+        )
 
+        # Fixture orientation to spindle x
+        print(proj_spindle_x)
+        proj_fixture_z: App.Vector = fixture_placement.Rotation * App.Vector(0, 1, 0).projectToPlane(
+            spindle_frame_obj.Placement.Base, globale_spindle_axis  # noqa
+        )
+        #print(proj_fixture_z)
+        rot_to_spindle_x: App.Rotation = App.Rotation(proj_fixture_z, globale_spindle_x)
 
-        # rot_to_spindle_x: App.Rotation = App.Rotation(z_on_fixture, spindle_x_on_fixture)
-        # fixture_frame_obj.Placement.rotate(
-        #     tuple(target_offset),  # noqa
-        #     fixture_placement.Rotation.inverted() * -spindle_axis,
-        #     float(np.degrees(rot_to_spindle_x.Angle))
-        # )
+        #print(np.degrees(rot_to_spindle_x.Angle))
 
-        # print(fixture_placement.Rotation.inverted() * spindle_axis)
+        fixture_frame_obj.Placement.rotate(
+            target_offset, fixture_placement.Rotation.inverted() * -globale_spindle_axis,  # noqa
+            float(np.degrees(rot_to_spindle_x.Angle))
+        )
 
         Gui.updateGui()
         time.sleep(sleep)
@@ -61,13 +64,13 @@ part_frame_obj: App.DocumentObject = doc.getObjectsByLabel("part_frame")[0]
 spindle_frame_obj: App.DocumentObject = doc.getObjectsByLabel("spindle_frame")[0]
 
 # Vectors
-part_pos: App.Vector = part_frame_obj.Placement.Base  # noqa
-part_rot: App.Vector = part_frame_obj.Placement.Rotation  # noqa
-spindle_pos: App.Vector = spindle_frame_obj.Placement.Base  # noqa
-spindle_axis: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(0, 0, 1)  # noqa
-spindle_x: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(1, 0, 0)  # noqa
-spindle_x_inv: App.Vector = App.Vector(1, 0, 0)  # noqa
+locale_part_pos: App.Vector = part_frame_obj.Placement.Base  # noqa
+locale_part_rot: App.Vector = part_frame_obj.Placement.Rotation  # noqa
 
+globale_spindle_pos: App.Vector = spindle_frame_obj.Placement.Base  # noqa
+globale_spindle_axis: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(0, 0, 1)  # noqa
+globale_spindle_x: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(1, 0, 0)  # noqa
+#spindle_x_inv: App.Vector = App.Vector(1, 0, 0)  # noqa
 
 #####################################
 # Job: feature_1_clearing
