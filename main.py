@@ -22,17 +22,17 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
         # Fixture orientation
         uv: tuple[float, float] = normal_srf.parameter(target_pos[i])  # noqa
         normal: App.Vector = part_rot * normal_face.normalAt(uv[0], uv[1])
-        rot_to_spindle: App.Rotation = App.Rotation(spindle_axis, -normal)
-        fixture_placement.rotate(target_offset, rot_to_spindle.Axis, float(np.degrees(-rot_to_spindle.Angle)))  # noqa
+        rot_to_spindle: App.Rotation = App.Rotation(normal, -spindle_axis)
+        fixture_placement.rotate(target_offset, rot_to_spindle.Axis, float(np.degrees(rot_to_spindle.Angle)))  # noqa
         fixture_frame_obj.Placement = fixture_placement
 
-        # print(target_offset, normal)
+        print(target_offset, rot_to_spindle.Axis, np.degrees(rot_to_spindle.Angle))
         Gui.updateGui()
         time.sleep(sleep)
 
     # Reset after animation
-    fixture_placement: App.Placement = App.Placement()
-    fixture_frame_obj.Placement = fixture_placement
+    # fixture_placement: App.Placement = App.Placement()
+    # fixture_frame_obj.Placement = fixture_placement
 
 
 doc: App.Document = App.ActiveDocument
