@@ -22,11 +22,29 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
         # Fixture orientation
         uv: tuple[float, float] = normal_srf.parameter(target_pos[i])  # noqa
         normal: App.Vector = part_rot * normal_face.normalAt(uv[0], uv[1])
-        rot_to_spindle: App.Rotation = App.Rotation(normal, -spindle_axis)
-        fixture_placement.rotate(target_offset, rot_to_spindle.Axis, float(np.degrees(rot_to_spindle.Angle)))  # noqa
+        rot_to_spindle_axis: App.Rotation = App.Rotation(normal, -spindle_axis)
+
+        fixture_placement.rotate(
+            target_offset, rot_to_spindle_axis.Axis, float(np.degrees(rot_to_spindle_axis.Angle))  # noqa
+        )
         fixture_frame_obj.Placement = fixture_placement
 
-        print(target_offset, rot_to_spindle.Axis, np.degrees(rot_to_spindle.Angle))
+        # spindle_x_on_fixture: App.Vector = fixture_placement.Rotation.inverted() * spindle_x
+        # z_on_fixture: App.Vector = spindle_frame_obj.Placement.Rotation.inverted() * fixture_placement.Rotation * App.Vector(0, 0, 1)
+        #
+        # print(z_on_fixture)
+        #print(spindle_x_on_fixture)
+
+
+        # rot_to_spindle_x: App.Rotation = App.Rotation(z_on_fixture, spindle_x_on_fixture)
+        # fixture_frame_obj.Placement.rotate(
+        #     tuple(target_offset),  # noqa
+        #     fixture_placement.Rotation.inverted() * -spindle_axis,
+        #     float(np.degrees(rot_to_spindle_x.Angle))
+        # )
+
+        # print(fixture_placement.Rotation.inverted() * spindle_axis)
+
         Gui.updateGui()
         time.sleep(sleep)
 
@@ -47,6 +65,9 @@ part_pos: App.Vector = part_frame_obj.Placement.Base  # noqa
 part_rot: App.Vector = part_frame_obj.Placement.Rotation  # noqa
 spindle_pos: App.Vector = spindle_frame_obj.Placement.Base  # noqa
 spindle_axis: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(0, 0, 1)  # noqa
+spindle_x: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(1, 0, 0)  # noqa
+spindle_x_inv: App.Vector = App.Vector(1, 0, 0)  # noqa
+
 
 #####################################
 # Job: feature_1_clearing
