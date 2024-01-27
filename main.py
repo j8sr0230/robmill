@@ -46,8 +46,8 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
         time.sleep(sleep)
 
     # Reset after animation
-    # fixture_placement: App.Placement = App.Placement()
-    # fixture_frame_obj.Placement = fixture_placement
+    fixture_placement: App.Placement = App.Placement()
+    fixture_frame_obj.Placement = fixture_placement
 
 
 doc: App.Document = App.ActiveDocument
@@ -65,7 +65,7 @@ spindle_pos_globale: App.Vector = spindle_frame_obj.Placement.Base  # noqa
 spindle_axis_globale: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(0, 0, 1)  # noqa
 spindle_x_globale: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(1, 0, 0)  # noqa
 
-fixture_alignment_axis: App.Vector = App.Vector(0, 1, 1)
+fixture_alignment_axis: App.Vector = App.Vector(0, 0, 1)
 
 #####################################
 # Job: feature_1_clearing
