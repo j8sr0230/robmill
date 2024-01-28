@@ -24,23 +24,26 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
         rot_to_spindle_axis_gf: App.Rotation = App.Rotation(cut_normal_ff, -spindle_axis_gf)
         ff_placement: App.Placement = App.Placement(spindle_pos_gf - target_pos_ff, rot_to_spindle_axis_gf,
                                                     target_pos_ff)
+        fixture_frame_obj.Placement = ff_placement
 
         # Fixture orientation to spindle x
         spindle_axis_ff: App.Vector = ff_placement.Rotation.inverted() * spindle_axis_gf
-        spindle_x_ff: App.Vector = ff_placement.Rotation.inverted() * spindle_x_globale
+        spindle_x_ff: App.Vector = ff_placement.Rotation.inverted() * spindle_x_gf
         spindle_x_ff_proj: App.Vector = App.Vector(0, spindle_x_ff.y, spindle_x_ff.z)
-        rot_to_spindle_x_gf: App.Rotation = App.Rotation(alignment_axis_ff, spindle_x_ff_proj)
-        angle_diff: float = float(-np.degrees(rot_to_spindle_x_gf.Angle))
 
-        fixture_frame_obj.Placement = ff_placement
-        fixture_frame_obj.Placement.rotate(target_pos_ff, spindle_axis_ff, angle_diff)  # noqa
+        angle_diff = np.degrees(
+            np.arctan2(alignment_axis_ff.y, alignment_axis_ff.z) -
+            np.arctan2(spindle_x_ff_proj.y, spindle_x_ff_proj.z)
+        )
+        print(angle_diff)
+        fixture_frame_obj.Placement.rotate(target_pos_ff, - spindle_axis_ff, angle_diff)  # noqa
 
         Gui.updateGui()
         time.sleep(sleep)
 
     # Reset after animation
-    ff_placement: App.Placement = App.Placement()
-    fixture_frame_obj.Placement = ff_placement
+    # ff_placement: App.Placement = App.Placement()
+    # fixture_frame_obj.Placement = ff_placement
 
 
 doc: App.Document = App.ActiveDocument
@@ -56,9 +59,9 @@ part_rot_ff: App.Vector = part_frame_obj.Placement.Rotation  # noqa
 
 spindle_pos_gf: App.Vector = spindle_frame_obj.Placement.Base  # noqa
 spindle_axis_gf: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(0, 0, 1)  # noqa
-spindle_x_globale: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(1, 0, 0)  # noqa
+spindle_x_gf: App.Vector = spindle_frame_obj.Placement.Rotation * App.Vector(1, 0, 0)  # noqa
 
-alignment_axis_ff: App.Vector = App.Vector(0, 0, 1)
+alignment_axis_ff: App.Vector = App.Vector(0, 1, 0)
 
 #####################################
 # Job: feature_1_clearing
