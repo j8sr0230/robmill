@@ -23,11 +23,11 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
         to_spindle_axis_gf: App.Rotation = App.Rotation(cut_normal_ff, -spindle_axis_gf)
 
         # Fixture orientation to spindle x
-        align_axis_gf: App.Vector = to_spindle_axis_gf * align_axis_ff
-        align_axis_sf: App.Vector = spindle_frame_obj.Placement.Rotation.inverted() * align_axis_gf  # noqa
-        deg_to_spindle_x: float = float(np.degrees(np.arctan2(align_axis_sf.y, align_axis_sf.x) -
-                                                   np.arctan2(spindle_axis_sf.y, spindle_axis_sf.x)))
-        to_spindle_x_gf: App.Rotation = App.Rotation(-spindle_axis_gf, deg_to_spindle_x)
+        fixture_align_axis_gf: App.Vector = to_spindle_axis_gf * fixture_align_axis_ff
+        fixture_align_axis_sf: App.Vector = spindle_rot_gf.inverted() * fixture_align_axis_gf  # noqa
+        deg_to_spindle_align_axis: float = float(np.arctan2(fixture_align_axis_sf.y, fixture_align_axis_sf.x) -
+                                                 np.arctan2(spindle_align_axis_sf.y, spindle_align_axis_sf.x))
+        to_spindle_x_gf: App.Rotation = App.Rotation(-spindle_axis_gf, float(np.degrees(deg_to_spindle_align_axis)))
 
         # Set compound placement
         fixture_frame_obj.Placement = App.Placement(
@@ -45,19 +45,22 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
 
 doc: App.Document = App.ActiveDocument
 
-# Frames
-fixture_frame_obj: App.DocumentObject = doc.getObjectsByLabel("fixture_frame")[0]
-part_frame_obj: App.DocumentObject = doc.getObjectsByLabel("part_frame")[0]
+# Spindle
 spindle_frame_obj: App.DocumentObject = doc.getObjectsByLabel("spindle_frame")[0]
+spindle_pos_gf: App.Vector = spindle_frame_obj.Placement.Base  # noqa
+spindle_rot_gf: App.Vector = spindle_frame_obj.Placement.Rotation  # noqa
+spindle_axis_sf: App.Vector = App.Vector(0, 0, 1)
+spindle_axis_gf: App.Vector = spindle_frame_obj.Placement.Rotation * spindle_axis_sf  # noqa
+spindle_align_axis_sf: App.Vector = App.Vector(1, 0, 0)
 
-# Vectors
-align_axis_ff: App.Vector = App.Vector(0, 0, 1)
+# Fixture
+fixture_frame_obj: App.DocumentObject = doc.getObjectsByLabel("fixture_frame")[0]
+fixture_align_axis_ff: App.Vector = App.Vector(0, 1, 0)
+
+# Part
+part_frame_obj: App.DocumentObject = doc.getObjectsByLabel("part_frame")[0]
 part_pos_ff: App.Vector = part_frame_obj.Placement.Base  # noqa
 part_rot_ff: App.Vector = part_frame_obj.Placement.Rotation  # noqa
-spindle_axis_sf: App.Vector = App.Vector(0, 0, 1)
-spindle_x_sf: App.Vector = App.Vector(1, 0, 0)
-spindle_pos_gf: App.Vector = spindle_frame_obj.Placement.Base  # noqa
-spindle_axis_gf: App.Vector = spindle_frame_obj.Placement.Rotation * spindle_axis_sf  # noqa
 
 #####################################
 # Job: feature_1_clearing
