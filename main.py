@@ -23,20 +23,20 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
         cut_normal_ff: App.Vector = part_rot_ff * normals.normalAt(uv_pf[0], uv_pf[1])
         rot_to_spindle_axis_gf: App.Rotation = App.Rotation(cut_normal_ff, -spindle_axis_gf)
 
-        ff_placement_gf: App.Placement = App.Placement(
-            spindle_pos_gf - target_pos_ff, rot_to_spindle_axis_gf, target_pos_ff
-        )
-        # fixture_frame_obj.Placement = ff_placement_gf
+        # ff_placement_gf: App.Placement = App.Placement(
+        #     spindle_pos_gf - target_pos_ff, rot_to_spindle_axis_gf, target_pos_ff
+        # )
 
         # Fixture orientation to spindle x
         align_axis_gf: App.Vector = rot_to_spindle_axis_gf * align_axis_ff
         align_axis_sf: App.Vector = spindle_frame_obj.Placement.Rotation.inverted() * align_axis_gf  # noqa
         rot_angle: float = float(np.degrees(np.arctan2(align_axis_sf.y, align_axis_sf.x) - np.arctan2(0, 1)))
+        # spindle_axis_ff: App.Vector = ff_placement_gf.Rotation.inverted() * spindle_axis_gf
+        rot_to_spindle_x_gf: App.Rotation = App.Rotation(-spindle_axis_gf, rot_angle)
+        # print(rot_to_spindle_x_gf.Axis, np.degrees(rot_to_spindle_x_gf.Angle))
 
-        spindle_axis_ff: App.Vector = ff_placement_gf.Rotation.inverted() * spindle_axis_gf
-        #fixture_frame_obj.Placement.rotate(target_pos_ff, -spindle_axis_ff, rot_angle)  # noqa
-
-        rot_to_spindle_x_gf: App.Rotation = App.Rotation(-spindle_axis_ff, rot_angle)
+        # fixture_frame_obj.Placement = ff_placement_gf
+        # fixture_frame_obj.Placement.rotate(target_pos_ff, rot_to_spindle_x_gf.Angle, rot_angle)  # noqa
 
         fixture_frame_obj.Placement = App.Placement(
             spindle_pos_gf - target_pos_ff,
