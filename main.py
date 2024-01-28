@@ -28,14 +28,25 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
 
         # Fixture orientation to spindle x
         spindle_axis_ff: App.Vector = ff_placement.Rotation.inverted() * spindle_axis_gf
-        spindle_x_ff: App.Vector = ff_placement.Rotation.inverted() * spindle_x_gf
-        spindle_x_ff_proj: App.Vector = App.Vector(0, spindle_x_ff.y, spindle_x_ff.z)
+        # spindle_x_ff: App.Vector = ff_placement.Rotation.inverted() * spindle_x_gf
+        # spindle_x_ff_proj: App.Vector = App.Vector(0, spindle_x_ff.y, spindle_x_ff.z)
 
-        angle_diff = np.degrees(
-            np.arctan2(alignment_axis_ff.y, alignment_axis_ff.z) -
-            np.arctan2(spindle_x_ff_proj.y, spindle_x_ff_proj.z)
+        # angle_diff = np.degrees(
+        #     np.arctan2(alignment_axis_ff.y, alignment_axis_ff.z) -
+        #     np.arctan2(spindle_x_ff_proj.y, spindle_x_ff_proj.z)
+        # )
+        # print(angle_diff)
+
+        alignment_axis_sf: App.Vector = (
+                spindle_frame_obj.Placement.Rotation.inverted() * rot_to_spindle_axis_gf * alignment_axis_ff  # noqa
         )
-        print(angle_diff)
+        # print(alignment_axis_sf)
+        angle_diff = np.degrees(
+            np.arctan2(alignment_axis_sf.y, alignment_axis_sf.x) -
+            np.arctan2(0, 1)
+        )
+        # print(angle_diff)
+
         fixture_frame_obj.Placement.rotate(target_pos_ff, - spindle_axis_ff, angle_diff)  # noqa
 
         Gui.updateGui()
