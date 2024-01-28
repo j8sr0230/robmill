@@ -63,31 +63,24 @@ spindle_axis_gf: App.Vector = spindle_frame_obj.Placement.Rotation * spindle_axi
 # Job: feature_1_clearing
 path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_1_clearing_path")[0]
 wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
-normal_face: Part.Face = doc.getObjectsByLabel("feature_1_clearing_top")[0].Shape.Faces[0]   # noqa
-
+normal_face: Part.Face = doc.getObjectsByLabel("feature_1_clearing_top")[0].Shape.Faces[0]  # noqa
 animate_job(wires_list, normal_face, dist=3, step=3, sleep=0.0005)
 
 # #####################################
-# # feature_1_hor_finishing job
-# path_obj_1: App.DocumentObject = doc.getObjectsByLabel("feature_1_hor_finishing_path_1")[0]
-# path_obj_2: App.DocumentObject = doc.getObjectsByLabel("feature_1_hor_finishing_path_2")[0]
-# path_obj_3: App.DocumentObject = doc.getObjectsByLabel("feature_1_hor_finishing_path_3")[0]
-# path_obj_4: App.DocumentObject = doc.getObjectsByLabel("feature_1_hor_finishing_path_4")[0]
-# # noinspection PyUnresolvedReferences
-# wires_list: list[Part.Wire] = [
-#     path_obj_1.Shape.Wires[0], path_obj_2.Shape.Wires[0], path_obj_3.Shape.Wires[0], path_obj_4.Shape.Wires[0]
-# ]
-# # noinspection PyUnresolvedReferences
-# normal_face: Part.Face = doc.getObjectsByLabel("feature_1_hor_finishing_srf")[0].Shape.Faces[0]
-#
-# # animate_fixture(wires_list, normal_face, dist=2, step=2)
-#
+#  Job: feature_1_hor_finishing
+path_obj_1: App.DocumentObject = doc.getObjectsByLabel("feature_1_hor_finishing_path_1")[0]
+path_obj_2: App.DocumentObject = doc.getObjectsByLabel("feature_1_hor_finishing_path_2")[0]
+path_obj_3: App.DocumentObject = doc.getObjectsByLabel("feature_1_hor_finishing_path_3")[0]
+path_obj_4: App.DocumentObject = doc.getObjectsByLabel("feature_1_hor_finishing_path_4")[0]
+wires_list: list[Part.Wire] = [
+    path_obj_1.Shape.Wires[0], path_obj_2.Shape.Wires[0], path_obj_3.Shape.Wires[0], path_obj_4.Shape.Wires[0]  # noqa
+]
+normal_face: Part.Face = doc.getObjectsByLabel("feature_1_hor_finishing_srf")[0].Shape.Faces[0]  # noqa
+animate_job(wires_list, normal_face, dist=2, step=2, sleep=0.0005)
+
 # #####################################
-# # feature_1_ver_finishing job
-# path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_1_ver_finishing_path")[0]
-# # noinspection PyUnresolvedReferences
-# wires_list: list[Part.Wire] = path_obj.Shape.Wires
-# # noinspection PyUnresolvedReferences
-# normal_face: Part.Face = doc.getObjectsByLabel("feature_1_ver_finishing_srf")[0].Shape.Faces[0]
-#
-# # animate_fixture(wires_list, normal_face, dist=2, step=2)
+# Job: feature_1_ver_finishing
+path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_1_ver_finishing_path")[0]
+wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
+normal_face: Part.Face = doc.getObjectsByLabel("feature_1_ver_finishing_srf")[0].Shape.Faces[0]  # noqa
+animate_job(wires_list, normal_face, dist=2, step=2, sleep=0.0005)
