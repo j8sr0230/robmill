@@ -16,6 +16,14 @@ def draw_frame(target: App.Placement = App.Placement) -> coin.SoSeparator():
     frame_draw_style.lineWidth = 1
     frame_sep.addChild(frame_draw_style)
 
+    trans: coin.SoTranslation = coin.SoTranslation()
+    trans.translation.setValue(np.array(target.Base))
+    frame_sep.addChild(trans)
+
+    rot: coin.SoRotation = coin.SoRotation()
+    rot.rotation.setValue(coin.SbVec3f(np.array(target.Rotation.Axis)), target.Rotation.Angle)
+    frame_sep.addChild(rot)
+
     x_sep: coin.SoSeparator = coin.SoSeparator()
     x_color: coin.SoBaseColor = coin.SoBaseColor()
     x_color.rgb = (1, 0, 0)
@@ -98,7 +106,7 @@ doc: App.Document = App.ActiveDocument
 if doc:
     sg: coin.SoSeparator = Gui.ActiveDocument.ActiveView.getSceneGraph()
 
-    frame: coin.SoSeparator = draw_frame()
+    frame: coin.SoSeparator = draw_frame(App.Placement(App.Vector(10, 10, 10), App.Rotation(App.Vector(0, 0, 1), 45)))
     sg.addChild(frame)
     # sg.removeChild(frame)
 
