@@ -9,7 +9,7 @@ import FreeCAD as App
 import Part
 
 
-def draw_frame(target: App.Placement = App.Placement) -> coin.SoSeparator():
+def draw_frame(target: App.Placement = App.Placement, size: int = 10) -> coin.SoSeparator():
     frame_sep: coin.SoSeparator = coin.SoSeparator()
 
     frame_draw_style: coin.SoDrawStyle = coin.SoDrawStyle()
@@ -29,7 +29,7 @@ def draw_frame(target: App.Placement = App.Placement) -> coin.SoSeparator():
     x_color.rgb = (1, 0, 0)
     x_sep.addChild(x_color)
     x_pts: coin.SoCoordinate3 = coin.SoCoordinate3()
-    x_pts.point.setValues(0, 2, [(0, 0, 0), (10, 0, 0)])
+    x_pts.point.setValues(0, 2, [(0, 0, 0), (size, 0, 0)])
     x_sep.addChild(x_pts)
     x_line: coin.SoLineSet = coin.SoLineSet()
     x_line.numVertices = 2
@@ -41,7 +41,7 @@ def draw_frame(target: App.Placement = App.Placement) -> coin.SoSeparator():
     y_color.rgb = (0, 1, 0)
     y_sep.addChild(y_color)
     y_pts: coin.SoCoordinate3 = coin.SoCoordinate3()
-    y_pts.point.setValues(0, 2, [(0, 0, 0), (0, 10, 0)])
+    y_pts.point.setValues(0, 2, [(0, 0, 0), (0, size, 0)])
     y_sep.addChild(y_pts)
     y_line: coin.SoLineSet = coin.SoLineSet()
     y_line.numVertices = 2
@@ -53,7 +53,7 @@ def draw_frame(target: App.Placement = App.Placement) -> coin.SoSeparator():
     z_color.rgb = (0, 0, 1)
     z_sep.addChild(z_color)
     z_pts: coin.SoCoordinate3 = coin.SoCoordinate3()
-    z_pts.point.setValues(0, 2, [(0, 0, 0), (0, 0, 10)])
+    z_pts.point.setValues(0, 2, [(0, 0, 0), (0, 0, size)])
     z_sep.addChild(z_pts)
     z_line: coin.SoLineSet = coin.SoLineSet()
     z_line.numVertices = 2
@@ -106,7 +106,9 @@ doc: App.Document = App.ActiveDocument
 if doc:
     sg: coin.SoSeparator = Gui.ActiveDocument.ActiveView.getSceneGraph()
 
-    frame: coin.SoSeparator = draw_frame(App.Placement(App.Vector(10, 10, 10), App.Rotation(App.Vector(0, 0, 1), 45)))
+    frame: coin.SoSeparator = draw_frame(
+        App.Placement(App.Vector(10, 10, 10), App.Rotation(App.Vector(0, 0, 1), 45)), 15
+    )
     sg.addChild(frame)
     # sg.removeChild(frame)
 
