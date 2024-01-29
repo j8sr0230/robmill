@@ -91,6 +91,10 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
             target_pos_ff
         )
 
+        sg: coin.SoSeparator = Gui.ActiveDocument.ActiveView.getSceneGraph()
+        target_frame: coin.SoSeparator = draw_frame(fixture_frame_obj.Placement, 10)
+        sg.addChild(target_frame)
+
         abc_angle: tuple[float] = (to_spindle_x_gf * to_spindle_axis_gf).getYawPitchRoll()
         print("X", round(target_pos_ff.x), ", Y", round(target_pos_ff.y), ", Z", round(target_pos_ff.z),
               ", A", round(abc_angle[0]), ", B", round(abc_angle[1]), ", C", round(abc_angle[2]))
@@ -104,12 +108,12 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
 
 doc: App.Document = App.ActiveDocument
 if doc:
-    sg: coin.SoSeparator = Gui.ActiveDocument.ActiveView.getSceneGraph()
-
-    frame: coin.SoSeparator = draw_frame(
-        App.Placement(App.Vector(10, 10, 10), App.Rotation(App.Vector(0, 0, 1), 45)), 15
-    )
-    sg.addChild(frame)
+    # sg: coin.SoSeparator = Gui.ActiveDocument.ActiveView.getSceneGraph()
+    #
+    # frame: coin.SoSeparator = draw_frame(
+    #     App.Placement(App.Vector(10, 10, 10), App.Rotation(App.Vector(0, 0, 1), 45)), 15
+    # )
+    # sg.addChild(frame)
     # sg.removeChild(frame)
 
     # Spindle
