@@ -36,6 +36,10 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
             target_pos_ff
         )
 
+        abc_angle: tuple[float] = (to_spindle_x_gf * to_spindle_axis_gf).getYawPitchRoll()
+        print("X", round(target_pos_ff.x), ", Y", round(target_pos_ff.y), ", Z", round(target_pos_ff.z),
+              ", A", round(abc_angle[0]), ", B", round(abc_angle[1]), ", C", round(abc_angle[2]))
+
         Gui.updateGui()
         time.sleep(sleep)
 
@@ -55,7 +59,7 @@ spindle_align_axis_sf: App.Vector = App.Vector(1, 0, 0)
 
 # Fixture
 fixture_frame_obj: App.DocumentObject = doc.getObjectsByLabel("fixture_frame")[0]
-fixture_align_axis_ff: App.Vector = App.Vector(0, 1, 0)
+fixture_align_axis_ff: App.Vector = App.Vector(0, 0, 1)
 
 # Part
 part_frame_obj: App.DocumentObject = doc.getObjectsByLabel("part_frame")[0]
