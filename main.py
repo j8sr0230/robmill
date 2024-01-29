@@ -9,7 +9,7 @@ import FreeCAD as App
 import Part
 
 
-def draw_frame(target: App.Placement = App.Placement, size: int = 10) -> coin.SoSeparator():
+def so_frame(target: App.Placement = App.Placement, size: int = 10) -> coin.SoSeparator():
     frame_sep: coin.SoSeparator = coin.SoSeparator()
 
     frame_draw_style: coin.SoDrawStyle = coin.SoDrawStyle()
@@ -67,6 +67,9 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
     target_pos_pf: list[App.Vector] = list(
         itertools.chain.from_iterable([w.discretize(Distance=dist) for w in wires])
     )
+
+    sg: coin.SoSeparator = Gui.ActiveDocument.ActiveView.getSceneGraph()
+    so_target_frames: list[coin.SoSeparator] = []
     normal_srf_pf: Part.Face.Surface = normals.Surface
     for i in np.arange(0, len(target_pos_pf), step):
         # Fixture position
@@ -91,8 +94,8 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
             target_pos_ff
         )
 
-        sg: coin.SoSeparator = Gui.ActiveDocument.ActiveView.getSceneGraph()
-        target_frame: coin.SoSeparator = draw_frame(fixture_frame_obj.Placement, 10)
+        target_frame: coin.SoSeparator = so_frame(fixture_frame_obj.Placement, 10)
+        so_target_frames.append(target_frame)
         sg.addChild(target_frame)
 
         abc_angle: tuple[float] = (to_spindle_x_gf * to_spindle_axis_gf).getYawPitchRoll()
@@ -104,6 +107,8 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
 
     # Reset after animation
     fixture_frame_obj.Placement = App.Placement()
+    for so_target_frame in so_target_frames:
+        sg.removeChild(so_target_frame)
 
 
 doc: App.Document = App.ActiveDocument
