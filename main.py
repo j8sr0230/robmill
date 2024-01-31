@@ -163,3 +163,10 @@ if doc:
     wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
     normal_face: Part.Face = doc.getObjectsByLabel("feature_1_ver_finishing_srf")[0].Shape.Faces[0]  # noqa
     animate_job(wires_list, normal_face, dist=2, step=2, sleep=0.0005)
+
+    #####################################
+    # Job: feature_2_clearing
+    path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_2_clearing_path")[0]
+    wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
+    normal_face: Part.Face = doc.getObjectsByLabel("feature_1_clearing_top")[0].Shape.Faces[0]  # noqa
+    animate_job(wires_list, normal_face, dist=1, step=1, sleep=0.0005)
