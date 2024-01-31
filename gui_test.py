@@ -70,9 +70,18 @@ gr_scene: QtWidgets.QGraphicsScene = QtWidgets.QGraphicsScene()
 gr_view.setScene(gr_scene)
 main_layout.addWidget(gr_view)
 
-socket_widget: SocketWidget = SocketWidget(None)
+node_widget: QtWidgets.QWidget = QtWidgets.QWidget()
+node_widget.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
+node_layout: QtWidgets.QVBoxLayout = QtWidgets.QVBoxLayout()
+node_layout.setSpacing(0)
+node_layout.setMargin(0)
+node_widget.setLayout(node_layout)
+
+node_layout.addWidget(SocketWidget(None))
+node_layout.addWidget(SocketWidget(None))
+
 gr_socket: QtWidgets.QGraphicsProxyWidget = gr_scene.addWidget(
-	socket_widget, QtCore.Qt.Widget
+	node_widget, QtCore.Qt.Widget
 )
 
 shadow: QtWidgets.QGraphicsDropShadowEffect = QtWidgets.QGraphicsDropShadowEffect()
@@ -80,7 +89,9 @@ shadow.setOffset(4)
 shadow.setBlurRadius(12)
 
 gr_rect: QtWidgets.QGraphicsRectItem = QtWidgets.QGraphicsRectItem()
-gr_rect.setRect(QtCore.QRect(SocketWidget.pin_size // 2, 0, socket_widget.width() - 5, socket_widget.height()))
+gr_rect.setRect(
+	QtCore.QRect(SocketWidget.pin_size // 2, 0, node_widget.width() - SocketWidget.pin_size // 2, node_widget.height())
+)
 gr_rect.setBrush(QtGui.QBrush(QtGui.QColor("#aaa")))
 gr_rect.setPen(QtGui.QPen(QtGui.QColor("#aaa")))
 gr_rect.setZValue(-1)
