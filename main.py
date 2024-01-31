@@ -94,9 +94,9 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
             target_pos_ff
         )
 
-        target_frame: coin.SoSeparator = so_frame(fixture_frame_obj.Placement, 10)
-        so_target_frames.append(target_frame)
-        sg.addChild(target_frame)
+        # target_frame: coin.SoSeparator = so_frame(fixture_frame_obj.Placement, 10)
+        # so_target_frames.append(target_frame)
+        # sg.addChild(target_frame)
 
         abc_angle: tuple[float] = (to_spindle_x_gf * to_spindle_axis_gf).getYawPitchRoll()
         print("X", round(target_pos_ff.x), ", Y", round(target_pos_ff.y), ", Z", round(target_pos_ff.z),
@@ -107,8 +107,8 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
 
     # Reset after animation
     fixture_frame_obj.Placement = App.Placement()
-    for so_target_frame in so_target_frames:
-        sg.removeChild(so_target_frame)
+    # for so_target_frame in so_target_frames:
+    #     sg.removeChild(so_target_frame)
 
 
 doc: App.Document = App.ActiveDocument
@@ -131,7 +131,7 @@ if doc:
 
     # Fixture
     fixture_frame_obj: App.DocumentObject = doc.getObjectsByLabel("fixture_frame")[0]
-    fixture_align_axis_ff: App.Vector = App.Vector(0, 0, 1)
+    fixture_align_axis_ff: App.Vector = App.Vector(0, 1, 0)
 
     # Part
     part_frame_obj: App.DocumentObject = doc.getObjectsByLabel("part_frame")[0]
@@ -143,7 +143,7 @@ if doc:
     path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_1_clearing_path")[0]
     wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
     normal_face: Part.Face = doc.getObjectsByLabel("feature_1_clearing_top")[0].Shape.Faces[0]  # noqa
-    # animate_job(wires_list, normal_face, dist=3, step=3, sleep=0.0005)
+    # animate_job(wires_list, normal_face, dist=2, step=2, sleep=0.0005)
 
     # #####################################
     #  Job: feature_1_hor_finishing
@@ -155,18 +155,55 @@ if doc:
         path_obj_1.Shape.Wires[0], path_obj_2.Shape.Wires[0], path_obj_3.Shape.Wires[0], path_obj_4.Shape.Wires[0]  # noqa
     ]
     normal_face: Part.Face = doc.getObjectsByLabel("feature_1_hor_finishing_srf")[0].Shape.Faces[0]  # noqa
-    # animate_job(wires_list, normal_face, dist=2, step=2, sleep=0.0005)
+    # animate_job(wires_list, normal_face, dist=1, step=1, sleep=0.0005)
 
     # #####################################
     # Job: feature_1_ver_finishing
     path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_1_ver_finishing_path")[0]
     wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
     normal_face: Part.Face = doc.getObjectsByLabel("feature_1_ver_finishing_srf")[0].Shape.Faces[0]  # noqa
-    # animate_job(wires_list, normal_face, dist=2, step=2, sleep=0.0005)
+    # animate_job(wires_list, normal_face, dist=1, step=1, sleep=0.00005)
 
     #####################################
     # Job: feature_2_clearing
-    path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_2_clearing_path")[0]
+    path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_2_clearing_path_left")[0]
     wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
     normal_face: Part.Face = doc.getObjectsByLabel("feature_1_clearing_top")[0].Shape.Faces[0]  # noqa
-    animate_job(wires_list, normal_face, dist=3, step=3, sleep=0.0005)
+    # animate_job(wires_list, normal_face, dist=2, step=2, sleep=0.0005)
+
+    # path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_2_clearing_path_right")[0]
+    # wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
+    # normal_face: Part.Face = doc.getObjectsByLabel("feature_1_clearing_top")[0].Shape.Faces[0]  # noqa
+    # animate_job(wires_list, normal_face, dist=2, step=2, sleep=0.0005)
+
+    # #####################################
+    #  Job: feature_2_hor_finishing
+    path_obj_1: App.DocumentObject = doc.getObjectsByLabel("feature_2_hor_finishing_path_1")[0]
+    path_obj_2: App.DocumentObject = doc.getObjectsByLabel("feature_2_hor_finishing_path_2")[0]
+    path_obj_3: App.DocumentObject = doc.getObjectsByLabel("feature_2_hor_finishing_path_3")[0]
+    path_obj_4: App.DocumentObject = doc.getObjectsByLabel("feature_2_hor_finishing_path_4")[0]
+
+    wires_list: list[Part.Wire] = [
+        path_obj_1.Shape.Wires[0], path_obj_2.Shape.Wires[0], path_obj_3.Shape.Wires[0], path_obj_4.Shape.Wires[0]  # noqa
+    ]
+    normal_face: Part.Face = doc.getObjectsByLabel("feature_2_hor_finishing_srf")[0].Shape.Faces[0]  # noqa
+    # animate_job(wires_list, normal_face, dist=1, step=1, sleep=0.0005)
+
+    # #####################################
+    # Job: feature_2_ver_finishing
+    path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_2_ver_finishing_left")[0]
+    wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
+    normal_face: Part.Face = doc.getObjectsByLabel("feature_1_ver_finishing_srf")[0].Shape.Faces[0]  # noqa
+    animate_job(wires_list, normal_face, dist=2, step=2, sleep=0.0005)
+
+    path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_2_ver_finishing_right")[0]
+    wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
+    normal_face: Part.Face = doc.getObjectsByLabel("feature_1_ver_finishing_srf")[0].Shape.Faces[0]  # noqa
+    # animate_job(wires_list, normal_face, dist=2, step=2, sleep=0.0005)
+
+    # #####################################
+    # Job: feature_3_clearing
+    path_obj: App.DocumentObject = doc.getObjectsByLabel("feature_3_path")[0]
+    wires_list: list[Part.Wire] = path_obj.Shape.Wires  # noqa
+    normal_face: Part.Face = doc.getObjectsByLabel("feature_3_srf")[0].Shape.Faces[0]  # noqa
+    # animate_job(wires_list, normal_face, dist=1, step=1, sleep=0.00005)
