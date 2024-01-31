@@ -107,8 +107,8 @@ def animate_job(wires: list[Part.Wire], normals: Part.Face, dist: int = 1, step:
 
     # Reset after animation
     fixture_frame_obj.Placement = App.Placement()
-    # for so_target_frame in so_target_frames:
-    #     sg.removeChild(so_target_frame)
+    for so_target_frame in so_target_frames:
+        sg.removeChild(so_target_frame)
 
 
 doc: App.Document = App.ActiveDocument
